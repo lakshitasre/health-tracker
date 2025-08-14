@@ -1,0 +1,284 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}Exercise Tracker - Health Tracker{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h1 class="display-6 mb-3">
+                        <i class="bi bi-lightning me-3"></i>Exercise Tracker
+                    </h1>
+                    <p class="lead text-muted">Log your workouts and track your fitness progress</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3 col-sm-6">
+            <div class="stats-card">
+                <h3>{{ total_exercises|default:"0" }}</h3>
+                <p>Total Workouts</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="stats-card">
+                <h3>{{ total_calories|default:"0" }}</h3>
+                <p>Total Calories Burned</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="stats-card">
+                <h3>{{ total_duration|default:"0" }}</h3>
+                <p>Total Minutes</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="stats-card">
+                <h3>{{ total_duration|default:"0"|floatformat:0|add:"0"|floatformat:1 }}</h3>
+                <p>Total Hours</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Exercise Form -->
+    <div class="row mb-4">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="bi bi-plus-circle me-2"></i>Log Exercise</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.exercise_type.id_for_label }}" class="form-label">Exercise Type</label>
+                            {{ form.exercise_type }}
+                            {% if form.exercise_type.errors %}
+                                <div class="text-danger small">{{ form.exercise_type.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.name.id_for_label }}" class="form-label">Exercise Name</label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                                <div class="text-danger small">{{ form.name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.duration.id_for_label }}" class="form-label">Duration (minutes)</label>
+                                    {{ form.duration }}
+                                    {% if form.duration.errors %}
+                                        <div class="text-danger small">{{ form.duration.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.calories_burned.id_for_label }}" class="form-label">Calories Burned</label>
+                                    {{ form.calories_burned }}
+                                    {% if form.calories_burned.errors %}
+                                        <div class="text-danger small">{{ form.calories_burned.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.date.id_for_label }}" class="form-label">Date</label>
+                            {{ form.date }}
+                            {% if form.date.errors %}
+                                <div class="text-danger small">{{ form.date.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.notes.id_for_label }}" class="form-label">Notes (Optional)</label>
+                            {{ form.notes }}
+                            {% if form.notes.errors %}
+                                <div class="text-danger small">{{ form.notes.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-plus-circle me-2"></i>Log Exercise
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Exercise Chart -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="bi bi-graph-up me-2"></i>Exercise Activity</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="exerciseChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exercise Entries Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="bi bi-list-ul me-2"></i>Exercise History</h5>
+                </div>
+                <div class="card-body">
+                    {% if page_obj %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Type</th>
+                                        <th>Exercise</th>
+                                        <th>Duration</th>
+                                        <th>Calories</th>
+                                        <th>Notes</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for exercise in page_obj %}
+                                    <tr>
+                                        <td>{{ exercise.date|date:"M d, Y" }}</td>
+                                        <td>
+                                            <span class="badge bg-primary">{{ exercise.get_exercise_type_display }}</span>
+                                        </td>
+                                        <td><strong>{{ exercise.name }}</strong></td>
+                                        <td>{{ exercise.duration }} min</td>
+                                        <td>{{ exercise.calories_burned }}</td>
+                                        <td>{{ exercise.notes|truncatechars:30|default:"--" }}</td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a href="{% url 'tracker:edit_entry' 'exercise' exercise.id %}" 
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <a href="{% url 'tracker:delete_entry' 'exercise' exercise.id %}" 
+                                                   class="btn btn-sm btn-outline-danger">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Pagination -->
+                        {% if page_obj.has_other_pages %}
+                        <nav aria-label="Exercise entries pagination">
+                            <ul class="pagination justify-content-center">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                                    </li>
+                                {% endif %}
+                                
+                                {% for num in page_obj.paginator.page_range %}
+                                    {% if page_obj.number == num %}
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ num }}</span>
+                                        </li>
+                                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                                
+                                {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                        {% endif %}
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="bi bi-lightning text-muted" style="font-size: 4rem;"></i>
+                            <h5 class="mt-3">No exercise logged yet</h5>
+                            <p class="text-muted">Start tracking your workouts by logging your first exercise above.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Exercise Chart JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('exerciseChart').getContext('2d');
+    
+    // Sample data - in a real app, this would come from the backend
+    const exerciseData = [
+        {% for exercise in page_obj|slice:":10" %}
+        {
+            x: '{{ exercise.date|date:"M d" }}',
+            y: {{ exercise.calories_burned }}
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ].reverse();
+    
+    if (exerciseData.length > 0) {
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: exerciseData.map(d => d.x),
+                datasets: [{
+                    label: 'Calories Burned',
+                    data: exerciseData.map(d => d.y),
+                    backgroundColor: '#FF9800',
+                    borderColor: '#F57C00',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

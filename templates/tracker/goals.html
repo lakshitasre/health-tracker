@@ -1,0 +1,267 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}Goals - Health Tracker{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h1 class="display-6 mb-3">
+                        <i class="bi bi-target me-3"></i>Health Goals
+                    </h1>
+                    <p class="lead text-muted">Set, track, and achieve your health objectives</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Goal Form -->
+    <div class="row mb-4">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="bi bi-plus-circle me-2"></i>Create New Goal</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.goal_type.id_for_label }}" class="form-label">Goal Type</label>
+                                {{ form.goal_type }}
+                                {% if form.goal_type.errors %}
+                                    <div class="text-danger small">{{ form.goal_type.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.title.id_for_label }}" class="form-label">Goal Title</label>
+                                {{ form.title }}
+                                {% if form.title.errors %}
+                                    <div class="text-danger small">{{ form.title.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="text-danger small">{{ form.description.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.target_value.id_for_label }}" class="form-label">Target Value</label>
+                                {{ form.target_value }}
+                                {% if form.target_value.errors %}
+                                    <div class="text-danger small">{{ form.target_value.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.target_unit.id_for_label }}" class="form-label">Unit</label>
+                                {{ form.target_unit }}
+                                {% if form.target_unit.errors %}
+                                    <div class="text-danger small">{{ form.target_unit.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.target_date.id_for_label }}" class="form-label">Target Date</label>
+                                {{ form.target_date }}
+                                {% if form.target_date.errors %}
+                                    <div class="text-danger small">{{ form.target_date.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.start_date.id_for_label }}" class="form-label">Start Date</label>
+                            {{ form.start_date }}
+                            {% if form.start_date.errors %}
+                                <div class="text-danger small">{{ form.start_date.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-plus-circle me-2"></i>Create Goal
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Goal Statistics -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="bi bi-graph-up me-2"></i>Goal Overview</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="text-center p-3 bg-light rounded">
+                                <h4 class="text-primary mb-1">{{ active_goals.count }}</h4>
+                                <small class="text-muted">Active Goals</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center p-3 bg-light rounded">
+                                <h4 class="text-success mb-1">{{ completed_goals.count }}</h4>
+                                <small class="text-muted">Completed</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center p-3 bg-light rounded">
+                                <h4 class="text-warning mb-1">{{ paused_goals.count }}</h4>
+                                <small class="text-muted">Paused</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center p-3 bg-light rounded">
+                                <h4 class="text-info mb-1">{{ active_goals.count|add:completed_goals.count|add:paused_goals.count }}</h4>
+                                <small class="text-muted">Total Goals</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Goals -->
+    {% if active_goals %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="bi bi-play-circle me-2"></i>Active Goals</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        {% for goal in active_goals %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="card-title mb-0">{{ goal.title }}</h6>
+                                        <span class="badge bg-primary">{{ goal.get_goal_type_display }}</span>
+                                    </div>
+                                    <p class="card-text small">{{ goal.description|truncatechars:100 }}</p>
+                                    
+                                    <div class="mb-2">
+                                        <small class="text-muted">
+                                            Progress: {{ goal.current_value }} / {{ goal.target_value }} {{ goal.target_unit }}
+                                        </small>
+                                    </div>
+                                    
+                                    <div class="progress mb-2">
+                                        <div class="progress-bar" role="progressbar" 
+                                             style="width: {{ goal.progress_percentage }}%"
+                                             aria-valuenow="{{ goal.progress_percentage }}" 
+                                             aria-valuemin="0" aria-valuemax="100">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">
+                                            Target: {{ goal.target_date|date:"M d, Y" }}
+                                        </small>
+                                        <small class="text-primary fw-bold">
+                                            {{ goal.progress_percentage }}%
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Completed Goals -->
+    {% if completed_goals %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="bi bi-check-circle me-2"></i>Completed Goals</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        {% for goal in completed_goals %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 border-success">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="card-title mb-0">{{ goal.title }}</h6>
+                                        <span class="badge bg-success">Completed</span>
+                                    </div>
+                                    <p class="card-text small">{{ goal.description|truncatechars:100 }}</p>
+                                    <small class="text-muted">Completed on {{ goal.updated_at|date:"M d, Y" }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Paused Goals -->
+    {% if paused_goals %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="bi bi-pause-circle me-2"></i>Paused Goals</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        {% for goal in paused_goals %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 border-warning">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="card-title mb-0">{{ goal.title }}</h6>
+                                        <span class="badge bg-warning">Paused</span>
+                                    </div>
+                                    <p class="card-text small">{{ goal.description|truncatechars:100 }}</p>
+                                    <small class="text-muted">Paused on {{ goal.updated_at|date:"M d, Y" }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- No Goals Message -->
+    {% if not active_goals and not completed_goals and not paused_goals %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <i class="bi bi-target text-muted" style="font-size: 4rem;"></i>
+                    <h5 class="mt-3">No goals set yet</h5>
+                    <p class="text-muted">Start your health journey by creating your first goal above.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

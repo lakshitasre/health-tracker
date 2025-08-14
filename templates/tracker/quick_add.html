@@ -1,0 +1,214 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}Quick Add - Health Tracker{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h1 class="display-6 mb-3">
+                        <i class="bi bi-lightning-charge me-3"></i>Quick Add
+                    </h1>
+                    <p class="lead text-muted">Fast entry for common health activities</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Add Form -->
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="bi bi-plus-circle me-2"></i>Quick Entry</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.action_type.id_for_label }}" class="form-label">What would you like to log?</label>
+                            {{ form.action_type }}
+                            {% if form.action_type.errors %}
+                                <div class="text-danger small">{{ form.action_type.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.value.id_for_label }}" class="form-label">Value</label>
+                            {{ form.value }}
+                            {% if form.value.errors %}
+                                <div class="text-danger small">{{ form.value.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text">
+                                <span id="value-help">Enter the value for your entry</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="{{ form.notes.id_for_label }}" class="form-label">Notes (Optional)</label>
+                            {{ form.notes }}
+                            {% if form.notes.errors %}
+                                <div class="text-danger small">{{ form.notes.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-plus-circle me-2"></i>Add Entry
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions Grid -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h4 class="text-center mb-4">Or use these quick actions:</h4>
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-md-4 col-sm-6">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-weight text-primary" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="card-title">Weight Entry</h5>
+                    <p class="card-text">Quickly log your weight for the day</p>
+                    <a href="{% url 'tracker:weight_tracker' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-plus-circle me-2"></i>Add Weight
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 col-sm-6">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-lightning text-warning" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="card-title">Exercise</h5>
+                    <p class="card-text">Log your workout or physical activity</p>
+                    <a href="{% url 'tracker:exercise_tracker' %}" class="btn btn-outline-warning">
+                        <i class="bi bi-plus-circle me-2"></i>Log Exercise
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 col-sm-6">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-egg-fried text-success" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="card-title">Food/Drink</h5>
+                    <p class="card-text">Track your meals and nutrition</p>
+                    <a href="{% url 'tracker:nutrition_tracker' %}" class="btn btn-outline-success">
+                        <i class="bi bi-plus-circle me-2"></i>Log Food
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 col-sm-6">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-droplet text-info" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="card-title">Water Intake</h5>
+                    <p class="card-text">Stay hydrated by tracking water</p>
+                    <a href="{% url 'tracker:water_tracker' %}" class="btn btn-outline-info">
+                        <i class="bi bi-plus-circle me-2"></i>Log Water
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 col-sm-6">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-emoji-smile text-warning" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="card-title">Mood Check</h5>
+                    <p class="card-text">Track your daily emotional well-being</p>
+                    <a href="{% url 'tracker:mood_tracker' %}" class="btn btn-outline-warning">
+                        <i class="bi bi-plus-circle me-2"></i>Log Mood
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 col-sm-6">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-target text-danger" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="card-title">Set Goals</h5>
+                    <p class="card-text">Create and track health objectives</p>
+                    <a href="{% url 'tracker:goals' %}" class="btn btn-outline-danger">
+                        <i class="bi bi-plus-circle me-2"></i>Set Goals
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const actionTypeSelect = document.getElementById('{{ form.action_type.id_for_label }}');
+    const valueInput = document.getElementById('{{ form.value.id_for_label }}');
+    const valueHelp = document.getElementById('value-help');
+    
+    function updateValueHelp() {
+        const selectedValue = actionTypeSelect.value;
+        const helpTexts = {
+            'weight': 'Enter weight in kg (e.g., 70.5)',
+            'exercise': 'Enter exercise name (e.g., Running, Gym)',
+            'nutrition': 'Enter food name (e.g., Apple, Chicken)',
+            'water': 'Enter amount in ml (e.g., 250)',
+            'mood': 'Enter mood level 1-5 (1=Very Sad, 5=Very Happy)'
+        };
+        
+        valueHelp.textContent = helpTexts[selectedValue] || 'Enter the value for your entry';
+        
+        // Update placeholder
+        const placeholders = {
+            'weight': '70.5',
+            'exercise': 'Running',
+            'nutrition': 'Apple',
+            'water': '250',
+            'mood': '4'
+        };
+        
+        valueInput.placeholder = placeholders[selectedValue] || 'Enter value...';
+    }
+    
+    actionTypeSelect.addEventListener('change', updateValueHelp);
+    updateValueHelp(); // Set initial help text
+});
+</script>
+
+<style>
+.feature-icon {
+    transition: transform 0.3s ease;
+}
+
+.card:hover .feature-icon {
+    transform: scale(1.1);
+}
+</style>
+{% endblock %}

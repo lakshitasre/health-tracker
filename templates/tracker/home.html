@@ -1,0 +1,160 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}Health Tracker - Your Wellness Journey Starts Here{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <!-- Hero Section -->
+    <div class="text-center mb-5">
+        <h1 class="display-3 fw-bold text-gradient mb-4">
+            <i class="bi bi-heart-pulse-fill text-danger me-3"></i>
+            Welcome to Health Tracker
+        </h1>
+        <p class="lead fs-4 text-muted mb-4">
+            Your comprehensive companion for tracking health, fitness, and wellness goals. 
+            Monitor weight, exercise, nutrition, sleep, and more with beautiful insights and analytics.
+        </p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="{% url 'tracker:register' %}" class="btn btn-primary btn-lg">
+                <i class="bi bi-person-plus me-2"></i>Get Started Free
+            </a>
+            <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+            </a>
+        </div>
+    </div>
+
+    <!-- Features Grid -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-weight text-primary" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="card-title">Weight Tracking</h5>
+                    <p class="card-text">Monitor your weight progress with detailed charts, BMI calculations, and trend analysis.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-lightning text-warning" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="card-title">Exercise Logging</h5>
+                    <p class="card-text">Track workouts, calories burned, and exercise duration with comprehensive exercise types.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-egg-fried text-success" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="card-title">Nutrition Monitoring</h5>
+                    <p class="card-text">Log meals, track macronutrients, and monitor daily calorie intake for better nutrition.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-moon-stars text-info" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="card-title">Sleep Analysis</h5>
+                    <p class="card-text">Monitor sleep patterns, quality, and duration to optimize your rest and recovery.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-droplet text-primary" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="card-title">Hydration Tracking</h5>
+                    <p class="card-text">Stay hydrated by tracking daily water intake and maintaining optimal hydration levels.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-target text-danger" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="card-title">Goal Setting</h5>
+                    <p class="card-text">Set and track health goals with progress monitoring and achievement celebrations.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Section -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3 col-sm-6">
+            <div class="stats-card">
+                <h3>10+</h3>
+                <p>Health Metrics</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="stats-card">
+                <h3>24/7</h3>
+                <p>Access</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="stats-card">
+                <h3>100%</h3>
+                <p>Privacy</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="stats-card">
+                <h3>Free</h3>
+                <p>Forever</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="text-center">
+        <div class="card">
+            <div class="card-body py-5">
+                <h2 class="mb-4">Ready to Start Your Health Journey?</h2>
+                <p class="lead mb-4">Join thousands of users who are already tracking their health and achieving their wellness goals.</p>
+                <a href="{% url 'tracker:register' %}" class="btn btn-primary btn-lg">
+                    <i class="bi bi-rocket-takeoff me-2"></i>Start Tracking Today
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.text-gradient {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.feature-icon {
+    transition: transform 0.3s ease;
+}
+
+.card:hover .feature-icon {
+    transform: scale(1.1);
+}
+</style>
+{% endblock %}

@@ -1,0 +1,229 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}Nutrition Tracker - Health Tracker{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">
+                <i class="bi bi-egg-fried me-2"></i>Nutrition Tracker
+            </h1>
+        </div>
+    </div>
+
+    <!-- Today's Summary -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="stats-card">
+                <h3>{{ today_calories|floatformat:0 }}</h3>
+                <p>Calories Today</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <h3>{{ today_protein|floatformat:1 }}g</h3>
+                <p>Protein Today</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <h3>{{ today_carbs|floatformat:1 }}g</h3>
+                <p>Carbs Today</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <h3>{{ today_fat|floatformat:1 }}g</h3>
+                <p>Fat Today</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Food Form -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-plus-circle me-2"></i>Log Food Intake
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="{{ form.meal_type.id_for_label }}" class="form-label">Meal Type</label>
+                                    {{ form.meal_type }}
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="{{ form.food_name.id_for_label }}" class="form-label">Food Name</label>
+                                    {{ form.food_name }}
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="mb-3">
+                                    <label for="{{ form.calories.id_for_label }}" class="form-label">Calories</label>
+                                    {{ form.calories }}
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="mb-3">
+                                    <label for="{{ form.protein.id_for_label }}" class="form-label">Protein (g)</label>
+                                    {{ form.protein }}
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="mb-3">
+                                    <label for="{{ form.carbs.id_for_label }}" class="form-label">Carbs (g)</label>
+                                    {{ form.carbs }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="mb-3">
+                                    <label for="{{ form.fat.id_for_label }}" class="form-label">Fat (g)</label>
+                                    {{ form.fat }}
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="mb-3">
+                                    <label for="{{ form.fiber.id_for_label }}" class="form-label">Fiber (g)</label>
+                                    {{ form.fiber }}
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="mb-3">
+                                    <label for="{{ form.sugar.id_for_label }}" class="form-label">Sugar (g)</label>
+                                    {{ form.sugar }}
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="mb-3">
+                                    <label for="{{ form.sodium.id_for_label }}" class="form-label">Sodium (mg)</label>
+                                    {{ form.sodium }}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="{{ form.notes.id_for_label }}" class="form-label">Notes</label>
+                                    {{ form.notes }}
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-2"></i>Log Food
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Food History -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-clock-history me-2"></i>Food History
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if page_obj %}
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Meal</th>
+                                        <th>Food</th>
+                                        <th>Calories</th>
+                                        <th>Protein</th>
+                                        <th>Carbs</th>
+                                        <th>Fat</th>
+                                        <th>Notes</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for entry in page_obj %}
+                                    <tr>
+                                        <td>{{ entry.date|date:"M d, Y" }}</td>
+                                        <td>
+                                            <span class="badge bg-info">{{ entry.get_meal_type_display }}</span>
+                                        </td>
+                                        <td>{{ entry.food_name }}</td>
+                                        <td>{{ entry.calories }}</td>
+                                        <td>{{ entry.protein|default:"-" }}g</td>
+                                        <td>{{ entry.carbs|default:"-" }}g</td>
+                                        <td>{{ entry.fat|default:"-" }}g</td>
+                                        <td>{{ entry.notes|default:"-" }}</td>
+                                        <td>
+                                            <a href="{% url 'tracker:edit_entry' 'nutrition' entry.id %}" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a href="{% url 'tracker:delete_entry' 'nutrition' entry.id %}" class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        {% if page_obj.has_other_pages %}
+                        <nav aria-label="Food history pagination">
+                            <ul class="pagination justify-content-center">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=1">&laquo; First</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                                    </li>
+                                {% endif %}
+
+                                {% for num in page_obj.paginator.page_range %}
+                                    {% if page_obj.number == num %}
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ num }}</span>
+                                        </li>
+                                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                        {% endif %}
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="bi bi-egg-fried display-1 text-muted"></i>
+                            <h4 class="mt-3">No food entries yet</h4>
+                            <p class="text-muted">Start tracking your nutrition by logging your first meal above.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

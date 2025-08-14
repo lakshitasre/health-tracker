@@ -1,0 +1,291 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}Dashboard - Health Tracker{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <!-- Welcome Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h1 class="display-6 mb-3">
+                        <i class="bi bi-sunrise text-warning me-3"></i>
+                        Good Morning, {{ user.first_name|default:user.username }}!
+                    </h1>
+                    <p class="lead text-muted">Here's your health overview for today</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Today's Stats -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3 col-sm-6">
+            <div class="stats-card">
+                <h3>{{ today_weight.weight|default:"--" }}</h3>
+                <p>Today's Weight (kg)</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="stats-card">
+                <h3>{{ today_exercise_calories|default:"0" }}</h3>
+                <p>Calories Burned</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="stats-card">
+                <h3>{{ today_nutrition_calories|default:"0" }}</h3>
+                <p>Calories Consumed</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="stats-card">
+                <h3>{{ today_water|default:"0"|floatformat:0 }}ml</h3>
+                <p>Water Intake</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Today's Mood -->
+    {% if today_mood %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-emoji-smile me-2"></i>Today's Mood
+                </div>
+                <div class="card-body text-center">
+                    <div class="mood-display">
+                        {% if today_mood.mood == 1 %}
+                            <span class="display-1">😢</span>
+                            <h4>Very Sad</h4>
+                        {% elif today_mood.mood == 2 %}
+                            <span class="display-1">😞</span>
+                            <h4>Sad</h4>
+                        {% elif today_mood.mood == 3 %}
+                            <span class="display-1">😐</span>
+                            <h4>Neutral</h4>
+                        {% elif today_mood.mood == 4 %}
+                            <span class="display-1">🙂</span>
+                            <h4>Happy</h4>
+                        {% elif today_mood.mood == 5 %}
+                            <span class="display-1">😄</span>
+                            <h4>Very Happy</h4>
+                        {% endif %}
+                        {% if today_mood.notes %}
+                            <p class="text-muted mt-2">{{ today_mood.notes }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Recent Data -->
+    <div class="row g-4 mb-4">
+        <!-- Recent Weight -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <i class="bi bi-weight me-2"></i>Recent Weight Entries
+                </div>
+                <div class="card-body">
+                    {% if recent_weight %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Weight (kg)</th>
+                                        <th>Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for entry in recent_weight %}
+                                    <tr>
+                                        <td>{{ entry.date|date:"M d" }}</td>
+                                        <td><strong>{{ entry.weight }}</strong></td>
+                                        <td>{{ entry.notes|truncatechars:30|default:"--" }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="{% url 'tracker:weight_tracker' %}" class="btn btn-primary">
+                                <i class="bi bi-plus-circle me-2"></i>Add Weight Entry
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="bi bi-weight text-muted" style="font-size: 3rem;"></i>
+                            <p class="text-muted mt-2">No weight entries yet</p>
+                            <a href="{% url 'tracker:weight_tracker' %}" class="btn btn-primary">
+                                <i class="bi bi-plus-circle me-2"></i>Add First Entry
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Exercise -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <i class="bi bi-lightning me-2"></i>Recent Exercise
+                </div>
+                <div class="card-body">
+                    {% if recent_exercise %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Exercise</th>
+                                        <th>Duration</th>
+                                        <th>Calories</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for exercise in recent_exercise %}
+                                    <tr>
+                                        <td>{{ exercise.date|date:"M d" }}</td>
+                                        <td><strong>{{ exercise.name }}</strong></td>
+                                        <td>{{ exercise.duration }} min</td>
+                                        <td>{{ exercise.calories_burned }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="{% url 'tracker:exercise_tracker' %}" class="btn btn-primary">
+                                <i class="bi bi-plus-circle me-2"></i>Log Exercise
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="bi bi-lightning text-muted" style="font-size: 3rem;"></i>
+                            <p class="text-muted mt-2">No exercise logged yet</p>
+                            <a href="{% url 'tracker:exercise_tracker' %}" class="btn btn-primary">
+                                <i class="bi bi-plus-circle me-2"></i>Log First Exercise
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Goals -->
+    {% if active_goals %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-target me-2"></i>Active Goals
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        {% for goal in active_goals %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title">{{ goal.title }}</h6>
+                                    <p class="card-text small">{{ goal.description|truncatechars:100 }}</p>
+                                    <div class="mb-2">
+                                        <small class="text-muted">
+                                            Progress: {{ goal.current_value }} / {{ goal.target_value }} {{ goal.target_unit }}
+                                        </small>
+                                    </div>
+                                    <div class="progress mb-2">
+                                        <div class="progress-bar" role="progressbar" 
+                                             style="width: {{ goal.progress_percentage }}%"
+                                             aria-valuenow="{{ goal.progress_percentage }}" 
+                                             aria-valuemin="0" aria-valuemax="100">
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">
+                                        Target: {{ goal.target_date|date:"M d, Y" }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="{% url 'tracker:goals' %}" class="btn btn-primary">
+                            <i class="bi bi-eye me-2"></i>View All Goals
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Quick Actions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-lightning-charge me-2"></i>Quick Actions
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3 col-sm-6">
+                            <a href="{% url 'tracker:weight_tracker' %}" class="btn btn-outline-primary w-100 py-3">
+                                <i class="bi bi-weight d-block mb-2" style="font-size: 2rem;"></i>
+                                Log Weight
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <a href="{% url 'tracker:exercise_tracker' %}" class="btn btn-outline-warning w-100 py-3">
+                                <i class="bi bi-lightning d-block mb-2" style="font-size: 2rem;"></i>
+                                Log Exercise
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <a href="{% url 'tracker:nutrition_tracker' %}" class="btn btn-outline-success w-100 py-3">
+                                <i class="bi bi-egg-fried d-block mb-2" style="font-size: 2rem;"></i>
+                                Log Food
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <a href="{% url 'tracker:water_tracker' %}" class="btn btn-outline-info w-100 py-3">
+                                <i class="bi bi-droplet d-block mb-2" style="font-size: 2rem;"></i>
+                                Log Water
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Action Button -->
+<a href="{% url 'tracker:quick_add' %}" class="floating-action-btn" title="Quick Add">
+    <i class="bi bi-plus" style="font-size: 1.5rem;"></i>
+</a>
+
+<style>
+.mood-display {
+    padding: 1rem;
+}
+
+.mood-display .display-1 {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .mood-display .display-1 {
+        font-size: 3rem;
+    }
+}
+</style>
+{% endblock %}
