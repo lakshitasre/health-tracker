@@ -76,6 +76,8 @@ A comprehensive Django-based health and wellness tracking application that helps
 7. **Open your browser**
    Navigate to `http://127.0.0.1:8000/`
 
+<img width="1919" height="960" alt="Screenshot 2025-08-14 170931" src="https://github.com/user-attachments/assets/0b74e50c-bf91-4950-ac19-176077fba5c7" />
+
 ## 📱 Usage
 
 ### Getting Started
@@ -102,8 +104,7 @@ A comprehensive Django-based health and wellness tracking application that helps
 - **Database**: SQLite (development), PostgreSQL (production)
 - **Charts**: Chart.js
 - **Icons**: Bootstrap Icons
-- **Deployment**: Render, Heroku ready
-
+  
 ## 📊 Database Models
 
 The application includes comprehensive models for:
@@ -119,7 +120,7 @@ The application includes comprehensive models for:
 
 ## 🚀 Deployment
 
-### Render Deployment
+### Render Deployment (Optional)
 
 1. **Fork/Clone** this repository to your GitHub account
 2. **Connect** your repository to Render
@@ -144,23 +145,6 @@ ALLOWED_HOSTS=your-domain.com
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Django community for the excellent framework
-- Bootstrap team for the beautiful UI components
-- Chart.js for the interactive charts
-- All contributors who help improve this project
-
-## 📞 Support
-
-If you have any questions or need help:
-- Create an issue on GitHub
-- Contact: [Your Contact Information]
 
 ## 🔮 Future Enhancements
 
